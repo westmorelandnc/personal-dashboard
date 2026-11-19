@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Life Dashboard</title>
+<meta name="theme-color" content="#1e3a8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Life Dashboard">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.17/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Inter', sans-serif; }
+.card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); padding: 1.5rem; }
+
+canvas { max-width: 100%; height: auto !important; }
+.card canvas { max-height: 280px; }
+
+</style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+<div class="max-w-7xl mx-auto p-6">
+  <h1 class="text-4xl font-bold mb-2 text-blue-900">Personal Life Dashboard</h1>
+  <p class="text-gray-600 mb-8">Track finance, fitness, reading, and more. Data as of Nov 19, 2026.</p>
+
+  <!-- Finance Section -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold mb-4">💰 Finance Overview</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+      <div class="card">
+        <h3 class="text-sm font-medium text-gray-500">Cash & Savings</h3>
+        <p class="text-3xl font-bold text-green-600">$208,907</p>
+      </div>
+      <div class="card">
+        <h3 class="text-sm font-medium text-gray-500">Home + Vehicles</h3>
+        <p class="text-3xl font-bold text-blue-600">$754,000</p>
+        <p class="text-xs text-gray-500 mt-1">Home ~$688k + Cars $66k</p>
+      </div>
+      <div class="card">
+        <h3 class="text-sm font-medium text-gray-500">Total Liabilities</h3>
+        <p class="text-3xl font-bold text-red-600">$312,628</p>
+      </div>
+      <div class="card">
+        <h3 class="text-sm font-medium text-gray-500">Estimated Net Worth</h3>
+        <p class="text-3xl font-bold text-emerald-600">$650,279</p>
+        <p class="text-xs text-gray-500 mt-1">Includes home equity & vehicles</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="card">
+        <h3 class="font-semibold mb-4">Account Balances</h3>
+        <canvas id="accountsChart" height="160"></canvas>
+      </div>
+      <div class="card">
+        <h3 class="font-semibold mb-4">Asset Breakdown</h3>
+        <canvas id="assetsChart" height="160"></canvas>
+      </div>
+    </div>
+    <div class="card mt-6">
+      <h3 class="font-semibold mb-4">Monthly Spending Comparison</h3>
+      <p class="text-xs text-gray-500 mb-4">Excludes transfers between accounts, credit card/loan payments, and large one-off transfers. Nov 2026 is partial (through ~Nov 18).</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="bg-blue-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600">This Month (Nov 2026)</div>
+          <div class="text-2xl font-bold text-blue-700">$12,573</div>
+          <div class="text-xs text-gray-500">Partial month</div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600">Last Month (Oct 2026)</div>
+          <div class="text-2xl font-bold text-gray-700">$12,618</div>
+        </div>
+        <div class="bg-purple-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600">Nov 2025</div>
+          <div class="text-2xl font-bold text-purple-700">$16,524</div>
+        </div>
+      </div>
+      <canvas id="spendCompareChart" height="140"></canvas>
+    </div>
+      <ul class="text-sm text-gray-700 space-y-1">
+        <li><strong>Home:</strong> 211 Cove Creek Dr, Cary, NC 27519 — 4 bed / 3 bath / ~2,793 sq ft (est. $688,000, mortgage ~$296k)</li>
+        <li><strong>2026 Jeep Grand Cherokee</strong> — owned free & clear (est. $45,000)</li>
+        <li><strong>2019 Toyota RAV4</strong> — owned free & clear (est. $21,000)</li>
+      </ul>
+      <p class="text-xs text-gray-500 mt-3">Home value based on nearby Redfin estimates (~$688k). Vehicle values are approximate private-party/retail estimates. Ask me to refine if you have exact trim/mileage/condition details.</p>
+    </div>
+    <div class="card mt-6">
+      <h3 class="font-semibold mb-2">Connected Institutions</h3>
+      <ul class="list-disc list-inside text-sm text-gray-600">
+        <li>Capital One (multiple savings & checking)</li>
+        <li>Merrill (CMA-Edge)</li>
+        <li>Wells Fargo (checking + mortgage)</li>
+        <li>Chase (credit cards)</li>
+        <li>American Express (Blue Cash)</li>
+      </ul>
+      <p class="text-xs text-gray-500 mt-2">Live data pulled via connected Finance tools. Ask me to refresh anytime.</p>
+    </div>
+  </section>
+
+  <!-- Fitness & Diet Section -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold mb-4">💪 Fitness & Diet</h2>
+    
+    <!-- Daily Calorie Summary (main focus) -->
+    <div class="card mb-6">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <h3 class="font-semibold text-lg">Today's Calories</h3>
+          <p class="text-sm text-gray-500">Target: 2,600 cal (adjusts with workouts)</p>
+        </div>
+        <div id="calorieStatus" class="text-right">
+          <div class="text-3xl font-bold" id="caloriesRemaining">--</div>
+          <div class="text-sm text-gray-500" id="caloriesLabel">remaining</div>
+        </div>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-4 mb-3">
+        <div id="calorieBar" class="bg-green-500 h-4 rounded-full transition-all" style="width: 0%"></div>
+      </div>
+      <div class="grid grid-cols-3 gap-4 text-center text-sm">
+        <div>
+          <div class="font-semibold text-lg" id="caloriesConsumed">0</div>
+          <div class="text-gray-500">Consumed</div>
+        </div>
+        <div>
+          <div class="font-semibold text-lg" id="caloriesBurned">0</div>
+          <div class="text-gray-500">Burned (workouts)</div>
+        </div>
+        <div>
+          <div class="font-semibold text-lg" id="proteinToday">0g</div>
+          <div class="text-gray-500">Protein</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="card">
+        <h3 class="font-semibold mb-4">Log Meal</h3>
+        <form id="mealForm" class="space-y-3">
+          <input type="date" id="mealDate" class="w-full border rounded px-3 py-2" required>
+          <input type="text" id="mealName" placeholder="Meal or food" class="w-full border rounded px-3 py-2" required>
+          <input type="number" id="mealCalories" placeholder="Calories" class="w-full border rounded px-3 py-2">
+          <input type="number" id="mealProtein" placeholder="Protein (g)" class="w-full border rounded px-3 py-2">
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Log Meal</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3 class="font-semibold mb-4">Log Workout</h3>
+        <form id="workoutForm" class="space-y-3">
+          <input type="date" id="workoutDate" class="w-full border rounded px-3 py-2" required>
+          <input type="text" id="workoutType" placeholder="Type (e.g. Walk, Vanya Moves)" class="w-full border rounded px-3 py-2" required>
+          <input type="number" id="workoutDuration" placeholder="Duration (minutes)" class="w-full border rounded px-3 py-2" min="1">
+          <input type="number" id="workoutCalories" placeholder="Calories burned" class="w-full border rounded px-3 py-2">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Log Workout</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+      <div class="card">
+        <h3 class="font-semibold mb-4">Recent Meals</h3>
+        <ul id="mealList" class="space-y-1 text-sm max-h-48 overflow-y-auto"></ul>
+      </div>
+      <div class="card">
+        <h3 class="font-semibold mb-4">Recent Workouts</h3>
+        <ul id="workoutList" class="space-y-2 text-sm max-h-48 overflow-y-auto"></ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Weight Tracker -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-bold mb-6">Weight Tracker</h2>
+    <div class="bg-white p-6 rounded-lg shadow">
+      <form id="weightForm" class="space-y-3">
+        <input type="date" id="weightDate" class="w-full border rounded px-3 py-2" required>
+        <input type="number" step="0.1" id="weightValue" placeholder="Weight (lbs)" class="w-full border rounded px-3 py-2" required>
+        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Log Weight</button>
+      </form>
+      <div class="mt-4 text-sm">
+        <div>Goal: <span class="font-semibold">199 lbs</span></div>
+        <div id="weightProgress" class="mt-1 text-gray-600"></div>
+      </div>
+      <ul id="weightList" class="mt-4 space-y-1 text-sm max-h-48 overflow-y-auto"></ul>
+      <canvas id="weightChart" class="mt-6" height="120"></canvas>
+    </div>
+  </section>
+  <!-- Reading Section -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold mb-4">📚 Reading Tracker</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="card">
+        <h3 class="font-semibold mb-4">Add Book / Progress</h3>
+        <form id="bookForm" class="space-y-3">
+          <input type="text" id="bookTitle" placeholder="Book title" class="w-full border rounded px-3 py-2" required>
+          <input type="text" id="bookAuthor" placeholder="Author" class="w-full border rounded px-3 py-2">
+          <input type="number" id="bookPages" placeholder="Total pages" class="w-full border rounded px-3 py-2">
+          <input type="number" id="bookProgress" placeholder="Pages read" class="w-full border rounded px-3 py-2">
+          <select id="bookStatus" class="w-full border rounded px-3 py-2">
+            <option value="reading">Currently Reading</option>
+            <option value="finished">Finished</option>
+            <option value="to-read">To Read</option>
+          </select>
+          <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Update Reading</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3 class="font-semibold mb-4">My Books</h3>
+        <div id="bookList" class="space-y-3 max-h-96 overflow-y-auto"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-center text-sm text-gray-500 mt-12 pb-8">
+    Built with Grok. Data for non-finance items stored locally in your browser (localStorage). Finance refreshes via conversation with me. Open this file anytime.
+  </footer>
+</div>
+
+<script>
+// --- Data persistence helpers ---
+function loadData(key, fallback = []) {
+  try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; }
+}
+function saveData(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+// --- Finance Charts (static snapshot) ---
+const accountsCtx = document.getElementById('accountsChart').getContext('2d');
+new Chart(accountsCtx, {
+  type: 'bar',
+  data: {
+    labels: ['House Stuff', 'Cash Savings', 'CMA-Edge', '360 Checking', 'Everyday Checking', 'Others'],
+    datasets: [{
+      label: 'Balance ($)',
+      data: [74231, 16043, 93633, 13990, 10482, 1528],
+      backgroundColor: 'rgba(59, 130, 246, 0.7)',
+      borderRadius: 6
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+const spendingCtx = document.getElementById('spendingChart');
+if (spendingCtx) {
+  new Chart(spendingCtx.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Groceries', 'Utilities', 'Credit Card Payments', 'Education', 'Transfers/Other', 'Dining', 'Amazon/Shopping'],
+      datasets: [{
+        data: [450, 600, 5000, 876, 2000, 250, 800],
+        backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#6b7280', '#ec4899', '#3b82f6']
+      }]
+    },
+    options: { responsive: true }
+  });
+}
+
+const assetsCtx = document.getElementById('assetsChart').getContext('2d');
+new Chart(assetsCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Cash & Savings', 'Home (est.)', '2026 Jeep GC', '2019 RAV4'],
+    datasets: [{
+      data: [208907, 688000, 45000, 21000],
+      backgroundColor: ['#10b981', '#3b82f6', '#6366f1', '#8b5cf6']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+
+const spendCompareCtx = document.getElementById('spendCompareChart').getContext('2d');
+new Chart(spendCompareCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Nov 2026 (partial)', 'Oct 2026', 'Nov 2025'],
+    datasets: [{
+      label: 'Spending ($)',
+      data: [12573, 12618, 16524],
+      backgroundColor: ['#3b82f6', '#6b7280', '#8b5cf6'],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString() } } }
+  }
+});
+
+// --- Workouts ---
+let workouts = loadData('workouts');
+function renderWorkouts() {
+  const list = document.getElementById('workoutList');
+  list.innerHTML = workouts.slice(-10).reverse().map(w => 
+    `<li class="border-b py-1">${w.date}: ${w.type} (${w.duration||'?'} min${w.calories ? ', ' + w.calories + ' cal' : ''})</li>`
+  ).join('') || '<li class="text-gray-400">No workouts logged yet.</li>';
+  
+  // Simple weekly chart
+  const ctx = document.getElementById('workoutChart').getContext('2d');
+  // Clear previous if any
+  if (window.workoutChartInstance) window.workoutChartInstance.destroy();
+  window.workoutChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: workouts.slice(-7).map(w => w.date.slice(5)),
+      datasets: [{
+        label: 'Minutes',
+        data: workouts.slice(-7).map(w => w.duration || 0),
+        borderColor: '#3b82f6',
+        tension: 0.3,
+        fill: false
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+}
+document.getElementById('workoutForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const entry = {
+    date: document.getElementById('workoutDate').value,
+    type: document.getElementById('workoutType').value,
+    duration: parseInt(document.getElementById('workoutDuration').value) || null,
+    calories: parseInt(document.getElementById('workoutCalories').value) || null
+  };
+  workouts.push(entry);
+  saveData('workouts', workouts);
+  renderWorkouts();
+  updateCalorieSummary();
+  e.target.reset();
+});
+renderWorkouts();
+
+
+// --- Daily Calorie Summary ---
+const DAILY_TARGET = 2600;
+
+function getTodayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function updateCalorieSummary() {
+  const today = getTodayStr();
+  const todayMeals = meals.filter(m => m.date === today);
+  const todayWorkouts = workouts.filter(w => w.date === today);
+  
+  const consumed = todayMeals.reduce((sum, m) => sum + (m.calories || 0), 0);
+  const burned = todayWorkouts.reduce((sum, w) => sum + (w.calories || 0), 0);
+  const protein = todayMeals.reduce((sum, m) => sum + (m.protein || 0), 0);
+  
+  const adjustedTarget = DAILY_TARGET + burned;
+  const remaining = Math.max(0, adjustedTarget - consumed);
+  const percent = Math.min(100, (consumed / adjustedTarget) * 100);
+  
+  document.getElementById('caloriesConsumed').textContent = consumed.toLocaleString();
+  document.getElementById('caloriesBurned').textContent = burned.toLocaleString();
+  document.getElementById('proteinToday').textContent = protein + 'g';
+  document.getElementById('caloriesRemaining').textContent = remaining.toLocaleString();
+  document.getElementById('caloriesLabel').textContent = remaining > 0 ? 'remaining' : 'over';
+  document.getElementById('calorieBar').style.width = percent + '%';
+  document.getElementById('calorieBar').className = percent > 100 
+    ? 'bg-red-500 h-4 rounded-full transition-all' 
+    : 'bg-green-500 h-4 rounded-full transition-all';
+}
+
+// Update existing render functions to also call summary
+
+// --- Meals ---
+let meals = loadData('meals', [
+  {date: '2026-11-19', name: 'Breakfast: 2 scoops Ka’Chava + 10g creatine', calories: 240, protein: 25},
+  {date: '2026-11-19', name: 'Lunch: 2x Whopper with Cheese', calories: 1520, protein: 66}
+]);
+function renderMeals() {
+  const list = document.getElementById('mealList');
+  list.innerHTML = meals.slice(-15).reverse().map(m => 
+    `<li class="border-b py-1">${m.date}: ${m.name} (${m.calories||'?'} cal, ${m.protein||'?'}g protein)</li>`
+  ).join('') || '<li class="text-gray-400">No meals logged yet.</li>';
+}
+document.getElementById('mealForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const entry = {
+    date: document.getElementById('mealDate').value,
+    name: document.getElementById('mealName').value,
+    calories: parseInt(document.getElementById('mealCalories').value) || null,
+    protein: parseInt(document.getElementById('mealProtein').value) || null
+  };
+  meals.push(entry);
+  saveData('meals', meals);
+  renderMeals();
+  updateCalorieSummary();
+  e.target.reset();
+});
+renderMeals();
+updateCalorieSummary();
+
+
+// --- Weight Tracker ---
+let weights = loadData('weights', []);
+function renderWeights() {
+  const list = document.getElementById('weightList');
+  const progress = document.getElementById('weightProgress');
+  if (!weights.length) {
+    list.innerHTML = '<li class="text-gray-400">No weights logged yet.</li>';
+    progress.textContent = '';
+    return;
+  }
+  const sorted = [...weights].sort((a,b) => new Date(b.date) - new Date(a.date));
+  list.innerHTML = sorted.slice(0,15).map(w => 
+    `<li class="border-b py-1">${w.date}: ${w.value} lbs</li>`
+  ).join('');
+  const latest = sorted[0].value;
+  const toGo = (latest - 199).toFixed(1);
+  progress.textContent = latest > 199 ? `${toGo} lbs to goal` : 'At or below goal!';
+  
+  // Chart
+  const ctx = document.getElementById('weightChart').getContext('2d');
+  if (window.weightChart) window.weightChart.destroy();
+  const labels = sorted.slice().reverse().map(w => w.date);
+  const data = sorted.slice().reverse().map(w => w.value);
+  window.weightChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets: [{ label: 'Weight (lbs)', data, borderColor: '#6366f1', tension: 0.2 }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+  });
+}
+document.getElementById('weightForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const entry = {
+    date: document.getElementById('weightDate').value,
+    value: parseFloat(document.getElementById('weightValue').value)
+  };
+  weights.push(entry);
+  saveData('weights', weights);
+  renderWeights();
+  e.target.reset();
+});
+renderWeights();
+
+// --- Books ---
+let books = loadData('books', []);
+function renderBooks() {
+  const list = document.getElementById('bookList');
+  list.innerHTML = books.map((b, i) => `
+    <div class="border rounded p-3">
+      <div class="font-semibold">${b.title} <span class="text-xs px-2 py-0.5 rounded ${b.status==='finished'?'bg-green-100 text-green-800':b.status==='reading'?'bg-blue-100 text-blue-800':'bg-gray-100'}">${b.status}</span></div>
+      <div class="text-sm text-gray-600">${b.author || ''}</div>
+      ${b.pages ? `<div class="text-xs mt-1">Progress: ${b.progress||0}/${b.pages} pages (${Math.round((b.progress||0)/b.pages*100)}%)</div>
+      <div class="w-full bg-gray-200 rounded-full h-2 mt-1"><div class="bg-purple-500 h-2 rounded-full" style="width:${Math.min(100,((b.progress||0)/b.pages*100))}%"></div></div>` : ''}
+    </div>
+  `).join('') || '<div class="text-gray-400">No books tracked yet.</div>';
+}
+document.getElementById('bookForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const title = document.getElementById('bookTitle').value;
+  let existing = books.find(b => b.title.toLowerCase() === title.toLowerCase());
+  if (existing) {
+    existing.progress = parseInt(document.getElementById('bookProgress').value) || existing.progress;
+    existing.status = document.getElementById('bookStatus').value;
+    existing.pages = parseInt(document.getElementById('bookPages').value) || existing.pages;
+    existing.author = document.getElementById('bookAuthor').value || existing.author;
+  } else {
+    books.push({
+      title,
+      author: document.getElementById('bookAuthor').value,
+      pages: parseInt(document.getElementById('bookPages').value) || null,
+      progress: parseInt(document.getElementById('bookProgress').value) || 0,
+      status: document.getElementById('bookStatus').value
+    });
+  }
+  saveData('books', books);
+  renderBooks();
+  e.target.reset();
+});
+renderBooks();
+
+// Set today's date as default
+document.querySelectorAll('input[type="date"]').forEach(el => el.valueAsDate = new Date());
+</script>
+
+<script>
+// Force chart resize on load for Edge
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if (window.Chart) {
+      Object.values(Chart.instances || {}).forEach(c => c && c.resize && c.resize());
+    }
+  }, 300);
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>
